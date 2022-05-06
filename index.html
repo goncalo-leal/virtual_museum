@@ -47,15 +47,17 @@
 			import * as THREE from './js/three.module.js';
 			import { PointerLockControls } from './js/pointerLockControls.js';
 			import { OrbitControls } from './js/orbitControls.js';
+			import { THREEx } from './js/threex.dynamictexture.js';
 
 			let camera, scene, renderer, controls;
 
 			const objects = [];
 
-			let raycaster_x, raycaster_z;
+			let raycaster_x1, raycaster_x2, raycaster_z1, raycaster_z2;
 			let museum_side = 200;
 			let world_side = 200;
-			let square_side = 20;
+			let square_side = 10;
+			let square_thickness = 1;
 
 			let moveForward = false;
 			let moveBackward = false;
@@ -68,8 +70,6 @@
 			const direction = new THREE.Vector3();
 			const vertex = new THREE.Vector3();
 			const color = new THREE.Color();
-
-			console.log(museum_side / 2 - square_side / 2);
 
 			init();
 			animate();
@@ -172,10 +172,6 @@
 				document.addEventListener( 'keydown', onKeyDown );
 				document.addEventListener( 'keyup', onKeyUp );
 
-                // AQUI TEM ERRO
-				raycaster_x = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( -1, 0, 0 ), 0, 10 );
-				raycaster_z = new THREE.Raycaster( new THREE.Vector3(), new THREE.Vector3( 0, 0, -1 ), 0, 10 );
-
 				// floor
 
 				let floorGeometry = new THREE.PlaneGeometry( world_side, world_side, 100, 100 );
@@ -208,20 +204,13 @@
 
                 //
 
-                // axis helper
-
-                // var axisHelper = new THREE.AxisHelper( 10 );
-                // scene.add( axisHelper );
-
-                //
-
                 // walls
 
-				let start = - museum_side / 2;
+				let start = -museum_side / 2;
 
-				let wallBase, wallMiddle, wallTop;
+				let wallBase, wallMiddle1, wallMiddle2, wallTop;
 				let wallTexture, wallMaterial;
-				let wallCubeMesh1, wallCubeMesh2, wallCubeMesh3, wall;
+				let wallCubeMesh1, wallCubeMesh2, wallCubeMesh3, wallCubeMesh4, wall;
 				let x, z, helper;
 
 				// load wall texture
@@ -232,29 +221,52 @@
 				
 				// we will build the walls, firts the horizontal ones and then the vertical ones
 				helper = start;
+				let text;
 				for (let i = 0; i < 2; i++){
 					// only change x
 
 					for (let j = 0; j < museum_side / square_side; j++){
-						x = start + square_side * j;
+						x = start + square_side / 2 + square_side * j ;
 						z = helper;
+
+						var dynamictexture = new THREEx.DynamicTexture(square_side, square_side);
+						dynamictexture.context.font = "7px verdana";
+						dynamictexture.texture.needsUpdate = true;
+						text = j.toString();
+						dynamictexture.clear('#d35400').drawText(text, undefined, square_side - 1, 'green');
+
+						let material = new THREE.MeshBasicMaterial({map: dynamictexture.texture})
 						
-						wallBase = new THREE.BoxBufferGeometry( square_side, square_side, square_side, square_side );
-						wallMiddle = new THREE.BoxBufferGeometry( square_side, square_side, square_side, square_side );
+						wallBase = new THREE.BoxBufferGeometry( square_side, square_side, square_thickness, square_side );
+						wallMiddle1 = new THREE.BoxBufferGeometry( square_side, square_side, square_thickness, square_side );
+						wallMiddle2 = new THREE.BoxBufferGeometry( square_side, square_side, square_thickness, square_side );
+						wallTop = new THREE.BoxBufferGeometry( square_side, square_side, square_thickness, square_side );
 												
-						wallCubeMesh1 = new THREE.Mesh( wallBase, wallMaterial );
-						wallCubeMesh2 = new THREE.Mesh( wallMiddle, wallMaterial );
+						wallCubeMesh1 = new THREE.Mesh( wallBase, material );
+						wallCubeMesh2 = new THREE.Mesh( wallMiddle1, material );
+						wallCubeMesh3 = new THREE.Mesh( wallMiddle2, material );
+						wallCubeMesh4 = new THREE.Mesh( wallTop, material );
 						
 						wallCubeMesh1.position.x = x;
-						wallCubeMesh1.position.y = 10.0;
+						wallCubeMesh1.position.y = square_side / 2;
 						wallCubeMesh1.position.z = z;
 
 						wallCubeMesh2.position.x = x;
-						wallCubeMesh2.position.y = 10.0 + square_side;
+						wallCubeMesh2.position.y = square_side / 2 + square_side;
 						wallCubeMesh2.position.z = z;
+
+						wallCubeMesh3.position.x = x;
+						wallCubeMesh3.position.y = square_side / 2 + square_side * 2;
+						wallCubeMesh3.position.z = z;
+
+						wallCubeMesh4.position.x = x;
+						wallCubeMesh4.position.y = square_side / 2 + square_side * 3;
+						wallCubeMesh4.position.z = z;
 
 						scene.add(wallCubeMesh1);
 						scene.add(wallCubeMesh2);
+						scene.add(wallCubeMesh3);
+						scene.add(wallCubeMesh4);
 						
 						objects.push(wallCubeMesh1);
 					}
@@ -267,25 +279,47 @@
 					// only change z
 					
 					for (let j = 0; j < museum_side / square_side; j++){
-						z = start + square_side * j;
+						z = start + square_side / 2 + square_side * j;
 						x = helper;
 
-						wallBase = new THREE.BoxBufferGeometry( square_side, square_side, square_side, square_side );
-						wallMiddle = new THREE.BoxBufferGeometry( square_side, square_side, square_side, square_side );
+						var dynamictexture = new THREEx.DynamicTexture(square_side, square_side);
+						dynamictexture.context.font = "bolder 7px verdana";
+						dynamictexture.texture.needsUpdate = true;
+						text = j.toString();
+						dynamictexture.clear('#cccccc').drawText(text, undefined, square_side - 1, 'orange');
+
+						let material = new THREE.MeshBasicMaterial({map: dynamictexture.texture})
+
+						wallBase = new THREE.BoxBufferGeometry( square_thickness, square_side, square_side, square_side );
+						wallMiddle1 = new THREE.BoxBufferGeometry( square_thickness, square_side, square_side, square_side );
+						wallMiddle2 = new THREE.BoxBufferGeometry( square_thickness, square_side, square_side, square_side );
+						wallTop = new THREE.BoxBufferGeometry( square_thickness, square_side, square_side, square_side );
 												
-						wallCubeMesh1 = new THREE.Mesh( wallBase, wallMaterial );
-						wallCubeMesh2 = new THREE.Mesh( wallMiddle, wallMaterial );
+						wallCubeMesh1 = new THREE.Mesh( wallBase, material );
+						wallCubeMesh2 = new THREE.Mesh( wallMiddle1, material );
+						wallCubeMesh3 = new THREE.Mesh( wallMiddle2, material );
+						wallCubeMesh4 = new THREE.Mesh( wallTop, material );
 						
 						wallCubeMesh1.position.x = x;
-						wallCubeMesh1.position.y = 10.0;
+						wallCubeMesh1.position.y = square_side / 2;
 						wallCubeMesh1.position.z = z;
 
 						wallCubeMesh2.position.x = x;
-						wallCubeMesh2.position.y = 10.0 + square_side;
+						wallCubeMesh2.position.y = square_side / 2 + square_side;
 						wallCubeMesh2.position.z = z;
+
+						wallCubeMesh3.position.x = x;
+						wallCubeMesh3.position.y = square_side / 2 + square_side * 2;
+						wallCubeMesh3.position.z = z;
+
+						wallCubeMesh4.position.x = x;
+						wallCubeMesh4.position.y = square_side / 2 + square_side * 3;
+						wallCubeMesh4.position.z = z;
 
 						scene.add(wallCubeMesh1);
 						scene.add(wallCubeMesh2);
+						scene.add(wallCubeMesh3);
+						scene.add(wallCubeMesh4);
 						
 						objects.push(wallCubeMesh1);
 					}
@@ -321,18 +355,6 @@
 
 				if ( controls.isLocked === true ) {
 
-					raycaster_x.ray.origin.copy( controls.getObject().position );
-					raycaster_z.ray.origin.copy( controls.getObject().position );
-
-					// raycaster_x.ray.origin.x -= 10;
-					// raycaster_x.ray.origin.z += 10;
-					// raycaster_z.ray.origin.x += 10;
-					// raycaster_z.ray.origin.z -= 10;
-
-					const intersections = raycaster_x.intersectObjects( objects, false ) || raycaster_z.intersectObjects( objects, false );
-
-					const onObject = intersections.length > 0;
-
 					const delta = ( time - prevTime ) / 1000;
 
 					velocity.x -= velocity.x * 10.0 * delta;
@@ -347,14 +369,6 @@
 					if ( moveForward || moveBackward ) velocity.z -= direction.z * 400.0 * delta;
 					if ( moveLeft || moveRight ) velocity.x -= direction.x * 400.0 * delta;
 
-					if ( onObject === true ) {
-
-						// velocity.x = 0; // Math.max( 0, velocity.x );
-						velocity.z = 0; // Math.max( 0, velocity.x );
-						canJump = true;
-
-					}
-
 					controls.moveRight( - velocity.x * delta );
 					controls.moveForward( - velocity.z * delta );
 
@@ -367,6 +381,42 @@
 
 						canJump = true;
 
+					}
+
+					if ( 
+						controls.getObject().position.x >= world_side / 2 - (square_thickness + 1)
+					) {
+						velocity.x = 0;
+						controls.getObject().position.x = world_side / 2 - (square_thickness + 1);
+
+						canJump = true;
+					}
+
+					else if ( 
+						controls.getObject().position.x <= - world_side / 2 + (square_thickness + 1)
+					) {
+						velocity.x = 0;
+						controls.getObject().position.x = - world_side / 2 + (square_thickness + 1);
+
+						canJump = true;
+					}
+
+					if ( 
+						controls.getObject().position.z >= world_side / 2 - (square_thickness + 1)
+					) {
+						velocity.z = 0;
+						controls.getObject().position.z = world_side / 2 - (square_thickness + 1);
+
+						canJump = true;
+					}
+
+					else if ( 
+						controls.getObject().position.z <= - world_side / 2 + (square_thickness + 1)
+					) {
+						velocity.z = 0;
+						controls.getObject().position.z = - world_side / 2 + (square_thickness + 1);
+
+						canJump = true;
 					}
 
 				}
