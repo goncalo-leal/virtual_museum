@@ -71,6 +71,42 @@
 			const vertex = new THREE.Vector3();
 			const color = new THREE.Color();
 
+			// wall_row_square
+			const paintings = {
+				"0_2_2": {
+					"picture": "./assets/paintings/1-01.jpg",
+					"row": 2
+				},
+				"0_2_3": {
+					"picture": "./assets/paintings/1-02.jpg",
+					"row": 2
+				},
+				"0_2_4": {
+					"picture": "./assets/paintings/1-03.jpg",
+					"row": 2
+				},
+				"0_2_5": {
+					"picture": "./assets/paintings/1-04.jpg",
+					"row": 2
+				},
+				"0_1_2": {
+					"picture": "./assets/paintings/1-05.jpg",
+					"row": 2
+				},
+				"0_1_3": {
+					"picture": "./assets/paintings/1-06.jpg",
+					"row": 2
+				},
+				"0_1_4": {
+					"picture": "./assets/paintings/1-07.jpg",
+					"row": 2
+				},
+				"0_1_5": {
+					"picture": "./assets/paintings/1-08.jpg",
+					"row": 2
+				}
+			};
+
 			init();
 			animate();
 
@@ -174,12 +210,12 @@
 
 				// floor
 
-				let floorGeometry = new THREE.PlaneGeometry( world_side, world_side, 100, 100 );
+				let floorGeometry = new THREE.PlaneGeometry( world_side, world_side, world_side, 100 );
 				floorGeometry.rotateX( - Math.PI / 2 );
 
-				let floorTexture = new THREE.TextureLoader().load( './assets/textures/floor.jpeg' );
+				let floorTexture = new THREE.TextureLoader().load( './assets/textures/floor3.jpg' );
                 floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
-                floorTexture.repeat.set(20, 20);
+                floorTexture.repeat.set(1, 1);
                 let floorMaterial = new THREE.MeshBasicMaterial({map: floorTexture});
                 let floorMesh = new THREE.Mesh( floorGeometry, floorMaterial );
                 scene.add( floorMesh );
@@ -194,7 +230,7 @@
 				ceilingGeometry.rotateX(-Math.PI / 2);
                 ceilingGeometry.translate(0.0, 40, 0.0);
 
-				let ceilingTexture = new THREE.TextureLoader().load( './assets/textures/ceiling.jpg' );
+				let ceilingTexture = new THREE.TextureLoader().load( './assets/textures/ceiling2.jpg' );
                 ceilingTexture.wrapS = ceilingTexture.wrapT = THREE.RepeatWrapping;
                 ceilingTexture.repeat.set(5, 5);
                 let ceilingMaterial = new THREE.MeshBasicMaterial({map: ceilingTexture});
@@ -211,10 +247,10 @@
 				let wallBase, wallMiddle1, wallMiddle2, wallTop;
 				let wallTexture, wallMaterial;
 				let wallCubeMesh1, wallCubeMesh2, wallCubeMesh3, wallCubeMesh4, wall;
-				let x, z, helper;
+				let x, z, helper, index;
 
 				// load wall texture
-				wallTexture = new THREE.TextureLoader().load( './assets/textures/wall.png' );
+				wallTexture = new THREE.TextureLoader().load( './assets/textures/wall5.jpg' );
 				wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
 				wallTexture.repeat.set(1, 1);
 				wallMaterial = new THREE.MeshBasicMaterial({map: wallTexture});
@@ -246,6 +282,26 @@
 						wallCubeMesh2 = new THREE.Mesh( wallMiddle1, material );
 						wallCubeMesh3 = new THREE.Mesh( wallMiddle2, material );
 						wallCubeMesh4 = new THREE.Mesh( wallTop, material );
+
+						index = i + "_" + 0 + "_" + j;
+						if (index in paintings) {
+							wallCubeMesh1 = new THREE.Mesh( wallBase, load_painting(paintings[index].picture) );
+						}
+
+						index = i + "_" + 1 + "_" + j;
+						if (index in paintings) {
+							wallCubeMesh2 = new THREE.Mesh( wallMiddle1, load_painting(paintings[index].picture) );
+						}
+						
+						index = i + "_" + 2 + "_" + j;
+						if (index in paintings) {
+							wallCubeMesh3 = new THREE.Mesh( wallMiddle2, load_painting(paintings[index].picture) );
+						}
+
+						index = i + "_" + 3 + "_" + j;
+						if (index in paintings)  {
+							wallCubeMesh4 = new THREE.Mesh( wallTop, load_painting(paintings[index].picture) );
+						}
 						
 						wallCubeMesh1.position.x = x;
 						wallCubeMesh1.position.y = square_side / 2;
@@ -282,23 +338,23 @@
 						z = start + square_side / 2 + square_side * j;
 						x = helper;
 
-						var dynamictexture = new THREEx.DynamicTexture(square_side, square_side);
-						dynamictexture.context.font = "bolder 7px verdana";
-						dynamictexture.texture.needsUpdate = true;
-						text = j.toString();
-						dynamictexture.clear('#cccccc').drawText(text, undefined, square_side - 1, 'orange');
+						// var dynamictexture = new THREEx.DynamicTexture(square_side, square_side);
+						// dynamictexture.context.font = "bolder 7px verdana";
+						// dynamictexture.texture.needsUpdate = true;
+						// text = j.toString();
+						// dynamictexture.clear('#cccccc').drawText(text, undefined, square_side - 1, 'orange');
 
-						let material = new THREE.MeshBasicMaterial({map: dynamictexture.texture})
+						// let material = new THREE.MeshBasicMaterial({map: dynamictexture.texture})
 
 						wallBase = new THREE.BoxBufferGeometry( square_thickness, square_side, square_side, square_side );
 						wallMiddle1 = new THREE.BoxBufferGeometry( square_thickness, square_side, square_side, square_side );
 						wallMiddle2 = new THREE.BoxBufferGeometry( square_thickness, square_side, square_side, square_side );
 						wallTop = new THREE.BoxBufferGeometry( square_thickness, square_side, square_side, square_side );
 												
-						wallCubeMesh1 = new THREE.Mesh( wallBase, material );
-						wallCubeMesh2 = new THREE.Mesh( wallMiddle1, material );
-						wallCubeMesh3 = new THREE.Mesh( wallMiddle2, material );
-						wallCubeMesh4 = new THREE.Mesh( wallTop, material );
+						wallCubeMesh1 = new THREE.Mesh( wallBase, wallMaterial );
+						wallCubeMesh2 = new THREE.Mesh( wallMiddle1, wallMaterial );
+						wallCubeMesh3 = new THREE.Mesh( wallMiddle2, wallMaterial );
+						wallCubeMesh4 = new THREE.Mesh( wallTop, wallMaterial );
 						
 						wallCubeMesh1.position.x = x;
 						wallCubeMesh1.position.y = square_side / 2;
@@ -336,6 +392,13 @@
 
 				window.addEventListener( 'resize', onWindowResize );
 
+			}
+
+			function load_painting(image_src) {
+				let wallTexture = new THREE.TextureLoader().load(image_src);
+				wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
+				wallTexture.repeat.set(1, 1);
+				return new THREE.MeshBasicMaterial({map: wallTexture});
 			}
 
 			function onWindowResize() {
