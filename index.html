@@ -5,7 +5,19 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="./css/main.css">
+		<link type="text/css" rel="stylesheet" href="./css/bootstrap_css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 		<style>
+			@font-face {
+				font-family: Avenir;
+				src: url(./assets/fonts/Avenir-Font/avenir_ff/AvenirLTStd-Roman.otf);
+			}
+
+			body {
+				font-family: Avenir;
+			}
+
 			#blocker {
 				position: absolute;
 				width: 100%;
@@ -25,6 +37,22 @@
 				text-align: center;
 				font-size: 14px;
 				cursor: pointer;
+
+				color: white;
+			}
+
+			.modal {
+				z-index: 10000;
+				vertical-align: center;
+			}
+
+			#modal_image {
+				max-width: 65%;
+				max-height: 60%;
+			}
+
+			#modal_size {
+				font-size: small;
 			}
 		</style>
 	</head>
@@ -34,15 +62,43 @@
 				<p style="font-size:36px">
 					Click to play
 				</p>
-				<p>
+				<p style="font-size:26px">
 					Move: WASD<br/>
 					<!--Jump: SPACE<br/>-->
-					Look: MOUSE
-					More Info: E
+					Look: MOUSE<br/>
+					More Info: WALL NUMBER
 				</p>
 			</div>
 		</div>
 
+		<div id="myModal" class="modal" tabindex="-1">
+			<div class="modal-dialog">
+			  <div class="modal-content">
+				<div class="modal-header">
+				  <h5 class="modal-title" id="modal_title"></h5>
+				  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body" style="text-align: center;">
+					<img src="" alt="" id="modal_image">
+					<p>
+						<button class="btn btn-dark" id="modal_back"><i class="fa-solid fa-angle-left"></i></button>
+						&nbsp;
+						<button class="btn btn-dark" id="modal_forward"><i class="fa-solid fa-angle-right"></i></button>
+					</p>
+
+					<div>
+						<h4 id="modal_author"></h4>
+						<p id="modal_location"></p>
+						<p id="modal_desc"></p>
+						<p id="modal_size"></p>
+					</div>
+				</div>
+			  </div>
+			</div>
+		</div>
+		  
+		<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+		<script src="./js/bootstrap_js/bootstrap.min.js"></script>
 		<script type="module">
 
 			import * as THREE from './js/three.module.js';
@@ -57,7 +113,7 @@
 			let raycaster_x1, raycaster_x2, raycaster_z1, raycaster_z2;
 			let museum_side = 200;
 			let world_side = 200;
-			let square_side = 10;
+			let square_side = 7;
 			let square_thickness = 1;
 
 			let moveForward = false;
@@ -72,41 +128,238 @@
 			const vertex = new THREE.Vector3();
 			const color = new THREE.Color();
 
+			let active_wall, active_index = null;
+
 			// wall_row_square
 			const paintings = {
-				"0_2_2": {
+				"0_3_0": {
+					"picture": "./assets/numbers/um-01.jpg",
+					"row": 3
+				},
+
+				"0_2_3": {
 					"picture": "./assets/paintings/1-01.jpg",
 					"row": 2
 				},
-				"0_2_3": {
+				"0_2_4": {
 					"picture": "./assets/paintings/1-02.jpg",
 					"row": 2
 				},
-				"0_2_4": {
+				"0_2_5": {
 					"picture": "./assets/paintings/1-03.jpg",
 					"row": 2
 				},
-				"0_2_5": {
+				"0_2_6": {
 					"picture": "./assets/paintings/1-04.jpg",
 					"row": 2
 				},
-				"0_1_2": {
+				"0_1_3": {
 					"picture": "./assets/paintings/1-05.jpg",
 					"row": 2
 				},
-				"0_1_3": {
+				"0_1_4": {
 					"picture": "./assets/paintings/1-06.jpg",
 					"row": 2
 				},
-				"0_1_4": {
+				"0_1_5": {
 					"picture": "./assets/paintings/1-07.jpg",
 					"row": 2
 				},
-				"0_1_5": {
+				"0_1_6": {
 					"picture": "./assets/paintings/1-08.jpg",
 					"row": 2
-				}
+				},
+
+				"0_2_10": {
+					"picture": "./assets/paintings/quadro_partido2-09.png",
+					"row": 2
+				},
+				"0_2_11": {
+					"picture": "./assets/paintings/quadro_partido2-10.png",
+					"row": 2
+				},
+				"0_2_12": {
+					"picture": "./assets/paintings/quadro_partido2-11.png",
+					"row": 2
+				},
+				"0_2_13": {
+					"picture": "./assets/paintings/quadro_partido2-12.png",
+					"row": 2
+				},
+				"0_1_10": {
+					"picture": "./assets/paintings/quadro_partido2-13.png",
+					"row": 2
+				},
+				"0_1_11": {
+					"picture": "./assets/paintings/quadro_partido2-14.png",
+					"row": 2
+				},
+				"0_1_12": {
+					"picture": "./assets/paintings/quadro_partido2-15.png",
+					"row": 2
+				},
+				"0_1_13": {
+					"picture": "./assets/paintings/quadro_partido2-16.png",
+					"row": 2
+				},
+
+				"0_2_17": {
+					"picture": "./assets/paintings/we-09.png",
+					"row": 2
+				},
+				"0_2_18": {
+					"picture": "./assets/paintings/we-10.png",
+					"row": 2
+				},
+				"0_2_19": {
+					"picture": "./assets/paintings/we-11.png",
+					"row": 2
+				},
+				"0_2_20": {
+					"picture": "./assets/paintings/we-12.png",
+					"row": 2
+				},
+				"0_1_17": {
+					"picture": "./assets/paintings/we-13.png",
+					"row": 2
+				},
+				"0_1_18": {
+					"picture": "./assets/paintings/we-14.png",
+					"row": 2
+				},
+				"0_1_19": {
+					"picture": "./assets/paintings/we-15.png",
+					"row": 2
+				},
+				"0_1_20": {
+					"picture": "./assets/paintings/we-16.png",
+					"row": 2
+				},
+
+				"0_2_24": {
+					"picture": "./assets/paintings/ri-12.jpg",
+					"row": 2
+				},
+				"0_2_25": {
+					"picture": "./assets/paintings/ri-14.jpg",
+					"row": 2
+				},
+				"0_1_24": {
+					"picture": "./assets/paintings/ri-13.jpg",
+					"row": 2
+				},
+				"0_1_25": {
+					"picture": "./assets/paintings/ri-15.jpg",
+					"row": 2
+				},
 			};
+
+			const wall_paintings = {
+				'1': [
+					{
+						'image': './assets/paintings/P1070122.JPG',
+						'author': 'Lara Lopes',
+						'desc': 'Pintura tinta a óleo',
+						'size': '60x50cm',
+						'year': '2021',
+						'location': 'Arrezima'
+					},
+					{
+						'image': './assets/paintings/P1070131.JPG',
+						'author': 'Lara Lopes',
+						'desc': 'Pintura tinta a óleo',
+						'size': '60x50cm',
+						'year': '2021',
+						'location': 'Arrezima'
+					},
+					{
+						'image': './assets/paintings/P1070132.JPG',
+						'author': 'Lara Lopes',
+						'desc': 'Pintura tinta a óleo',
+						'size': '60x50cm',
+						'year': '2021',
+						'location': 'Arrezima'
+					},
+					{
+						'image': './assets/paintings/P1070165.JPG',
+						'author': 'Lara Lopes',
+						'desc': 'Pintura tinta a óleo',
+						'size': '60x50cm',
+						'year': '2021',
+						'location': 'Arrezima'
+					},
+					{
+						'image': './assets/paintings/P1070124.JPG',
+						'author': 'Lara Lopes',
+						'desc': 'Pintura tinta a óleo',
+						'size': '60x50cm',
+						'year': '2021',
+						'location': 'Arrezima'
+					},
+				]
+			}
+
+			document.addEventListener('keydown', function(e) {
+				let show_modal = false;
+				switch (e.keyCode) {
+					case 49:
+						active_wall = '1';
+						show_modal = true;
+						break;
+					case 50:
+						active_wall = '2';
+						show_modal = true;
+						break;
+					case 51:
+						active_wall = '3';
+						show_modal = true;
+						break;
+					case 52:
+						active_wall = '4';
+						show_modal = true;
+						break;
+				}
+
+				if (show_modal) {
+					load_info();
+					$("#myModal").modal("toggle");
+					controls.unlock();
+				}
+			});
+
+			function load_info() {
+				let painting = wall_paintings[active_wall][0]
+				active_index = 0;
+
+				$("#modal_image").attr('src', painting['image']);
+				$("#modal_author").text(painting['author']);
+				$("#modal_location").text(painting['location']+ ', ' + painting['year']);
+				$("#modal_desc").text(painting['desc']);
+				$("#modal_size").text(painting['size']);
+			}
+
+			$("#modal_back").click(function() {
+				active_index = active_index - 1 < 0 ? wall_paintings[active_wall].length - 1 : active_index - 1
+
+				let painting = wall_paintings[active_wall][active_index]
+
+				$("#modal_image").attr('src', painting['image']);
+				$("#modal_author").text(painting['author']);
+				$("#modal_location").text(painting['location']+ ', ' + painting['year']);
+				$("#modal_desc").text(painting['desc']);
+				$("#modal_size").text(painting['size']);
+			});
+			$("#modal_forward").click(function() {
+				active_index = active_index + 1 >= wall_paintings[active_wall].length ? 0 : active_index + 1
+
+				let painting = wall_paintings[active_wall][active_index]
+
+				$("#modal_image").attr('src', painting['image']);
+				$("#modal_author").text(painting['author']);
+				$("#modal_location").text(painting['location']+ ', ' + painting['year']);
+				$("#modal_desc").text(painting['desc']);
+				$("#modal_size").text(painting['size']);
+			});
 
 			init();
 			animate();
@@ -234,7 +487,7 @@
 
                 let ceilingGeometry = new THREE.PlaneGeometry( world_side, world_side, 100, 100 );
 				ceilingGeometry.rotateX(-Math.PI / 2);
-                ceilingGeometry.translate(0.0, 40, 0.0);
+                ceilingGeometry.translate(0.0, 28, 0.0);
 
 				let ceilingTexture = new THREE.TextureLoader().load( './assets/textures/ceiling2.jpg' );
                 ceilingTexture.wrapS = ceilingTexture.wrapT = THREE.RepeatWrapping;
@@ -271,23 +524,36 @@
 						x = start + square_side / 2 + square_side * j ;
 						z = helper;
 
-						var dynamictexture = new THREEx.DynamicTexture(square_side, square_side);
-						dynamictexture.context.font = "7px verdana";
-						dynamictexture.texture.needsUpdate = true;
-						text = j.toString();
-						dynamictexture.clear('#d35400').drawText(text, undefined, square_side - 1, 'green');
+						// var dynamictexture = new THREEx.DynamicTexture(square_side, square_side);
+						// dynamictexture.context.font = "7px verdana";
+						// dynamictexture.texture.needsUpdate = true;
+						// text = j.toString();
+						// dynamictexture.clear('#d35400').drawText(text, undefined, square_side - 1, 'green');
 
-						let material = new THREE.MeshBasicMaterial({map: dynamictexture.texture})
+						// let material = new THREE.MeshBasicMaterial({map: dynamictexture.texture})
 						
 						wallBase = new THREE.BoxBufferGeometry( square_side, square_side, square_thickness, square_side );
 						wallMiddle1 = new THREE.BoxBufferGeometry( square_side, square_side, square_thickness, square_side );
 						wallMiddle2 = new THREE.BoxBufferGeometry( square_side, square_side, square_thickness, square_side );
 						wallTop = new THREE.BoxBufferGeometry( square_side, square_side, square_thickness, square_side );
 												
-						wallCubeMesh1 = new THREE.Mesh( wallBase, material );
-						wallCubeMesh2 = new THREE.Mesh( wallMiddle1, material );
-						wallCubeMesh3 = new THREE.Mesh( wallMiddle2, material );
-						wallCubeMesh4 = new THREE.Mesh( wallTop, material );
+						wallCubeMesh1 = new THREE.Mesh( wallBase, wallMaterial );
+						wallCubeMesh2 = new THREE.Mesh( wallMiddle1, wallMaterial );
+						wallCubeMesh3 = new THREE.Mesh( wallMiddle2, wallMaterial );
+
+						if (j == 0) {
+							var dynamictexture = new THREEx.DynamicTexture(square_side * 4, square_side * 4);
+							dynamictexture.context.font = "bolder 30px verdana";
+							dynamictexture.texture.needsUpdate = true;
+							text = (i + 1).toString();
+							dynamictexture.clear('#ffffff').drawText(text, undefined, square_side * 4 - square_side / 2, 'black');
+
+							let number = new THREE.MeshBasicMaterial({map: dynamictexture.texture})
+							wallCubeMesh4 = new THREE.Mesh( wallTop, number );
+						}
+						else {
+							wallCubeMesh4 = new THREE.Mesh( wallTop, wallMaterial );
+						}
 
 						index = i + "_" + 0 + "_" + j;
 						if (index in paintings) {
@@ -448,7 +714,7 @@
 						velocity.y = 0;
 						controls.getObject().position.y = 10;
 
-						canJump = true;
+						canJump = false;
 
 					}
 
@@ -458,7 +724,7 @@
 						velocity.x = 0;
 						controls.getObject().position.x = world_side / 2 - (square_thickness + 1);
 
-						canJump = true;
+						canJump = false;
 					}
 
 					else if ( 
@@ -467,7 +733,7 @@
 						velocity.x = 0;
 						controls.getObject().position.x = - world_side / 2 + (square_thickness + 1);
 
-						canJump = true;
+						canJump = false;
 					}
 
 					if ( 
@@ -476,7 +742,7 @@
 						velocity.z = 0;
 						controls.getObject().position.z = world_side / 2 - (square_thickness + 1);
 
-						canJump = true;
+						canJump = false;
 					}
 
 					else if ( 
@@ -485,7 +751,7 @@
 						velocity.z = 0;
 						controls.getObject().position.z = - world_side / 2 + (square_thickness + 1);
 
-						canJump = true;
+						canJump = false;
 					}
 
 				}
