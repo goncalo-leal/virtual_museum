@@ -1,60 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>Virtual Museum</title>
+
+		<title>VART</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link type="text/css" rel="stylesheet" href="./css/main.css">
 		<link type="text/css" rel="stylesheet" href="./css/bootstrap_css/bootstrap.min.css">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-		<style>
-			@font-face {
-				font-family: Avenir;
-				src: url(./assets/fonts/Avenir-Font/avenir_ff/AvenirLTStd-Roman.otf);
-			}
-
-			body {
-				font-family: Avenir;
-			}
-
-			#blocker {
-				position: absolute;
-				width: 100%;
-				height: 100%;
-				background-color: rgba(0,0,0,0.5);
-			}
-
-			#instructions {
-				width: 100%;
-				height: 100%;
-
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-				align-items: center;
-
-				text-align: center;
-				font-size: 14px;
-				cursor: pointer;
-
-				color: white;
-			}
-
-			.modal {
-				z-index: 10000;
-				vertical-align: center;
-			}
-
-			#modal_image {
-				max-width: 65%;
-				max-height: 60%;
-			}
-
-			#modal_size {
-				font-size: small;
-			}
-		</style>
 	</head>
 	<body>
 		<div id="blocker">
@@ -64,7 +18,6 @@
 				</p>
 				<p style="font-size:26px">
 					Move: WASD<br/>
-					<!--Jump: SPACE<br/>-->
 					Look: MOUSE<br/>
 					More Info: WALL NUMBER
 				</p>
@@ -99,6 +52,7 @@
 		  
 		<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 		<script src="./js/bootstrap_js/bootstrap.min.js"></script>
+
 		<script type="module">
 
 			import * as THREE from './js/three.module.js';
@@ -107,8 +61,6 @@
 			import { THREEx } from './js/threex.dynamictexture.js';
 
 			let camera, scene, renderer, controls;
-
-			const objects = [];
 
 			let raycaster_x1, raycaster_x2, raycaster_z1, raycaster_z2;
 			let museum_side = 200;
@@ -121,6 +73,9 @@
 			let moveLeft = false;
 			let moveRight = false;
 			let canJump = false;
+
+			// change this value to see indexes on walls
+			let show_index = false;
 
 			let prevTime = performance.now();
 			const velocity = new THREE.Vector3();
@@ -155,19 +110,19 @@
 				},
 				"0_1_3": {
 					"picture": "./assets/paintings/1-05.jpg",
-					"row": 2
+					"row": 1
 				},
 				"0_1_4": {
 					"picture": "./assets/paintings/1-06.jpg",
-					"row": 2
+					"row": 1
 				},
 				"0_1_5": {
 					"picture": "./assets/paintings/1-07.jpg",
-					"row": 2
+					"row": 1
 				},
 				"0_1_6": {
 					"picture": "./assets/paintings/1-08.jpg",
-					"row": 2
+					"row": 1
 				},
 
 				"0_2_10": {
@@ -188,19 +143,19 @@
 				},
 				"0_1_10": {
 					"picture": "./assets/paintings/quadro_partido2-13.png",
-					"row": 2
+					"row": 1
 				},
 				"0_1_11": {
 					"picture": "./assets/paintings/quadro_partido2-14.png",
-					"row": 2
+					"row": 1
 				},
 				"0_1_12": {
 					"picture": "./assets/paintings/quadro_partido2-15.png",
-					"row": 2
+					"row": 1
 				},
 				"0_1_13": {
 					"picture": "./assets/paintings/quadro_partido2-16.png",
-					"row": 2
+					"row": 1
 				},
 
 				"0_2_17": {
@@ -221,19 +176,19 @@
 				},
 				"0_1_17": {
 					"picture": "./assets/paintings/we-13.png",
-					"row": 2
+					"row": 1
 				},
 				"0_1_18": {
 					"picture": "./assets/paintings/we-14.png",
-					"row": 2
+					"row": 1
 				},
 				"0_1_19": {
 					"picture": "./assets/paintings/we-15.png",
-					"row": 2
+					"row": 1
 				},
 				"0_1_20": {
 					"picture": "./assets/paintings/we-16.png",
-					"row": 2
+					"row": 1
 				},
 
 				"0_2_24": {
@@ -246,11 +201,375 @@
 				},
 				"0_1_24": {
 					"picture": "./assets/paintings/ri-13.jpg",
-					"row": 2
+					"row": 1
 				},
 				"0_1_25": {
 					"picture": "./assets/paintings/ri-15.jpg",
+					"row": 1
+				},
+
+
+				"2_2_25": {
+					"picture": "./assets/paintings/borboletas-09.jpg",
 					"row": 2
+				},
+				"2_2_24": {
+					"picture": "./assets/paintings/borboletas-10.jpg",
+					"row": 2
+				},
+				"2_2_23": {
+					"picture": "./assets/paintings/borboletas-11.jpg",
+					"row": 2
+				},
+				"2_2_22": {
+					"picture": "./assets/paintings/borboletas-12.jpg",
+					"row": 2
+				},
+				"2_1_25": {
+					"picture": "./assets/paintings/borboletas-13.jpg",
+					"row": 1
+				},
+				"2_1_24": {
+					"picture": "./assets/paintings/borboletas-14.jpg",
+					"row": 1
+				},
+				"2_1_23": {
+					"picture": "./assets/paintings/borboletas-15.jpg",
+					"row": 1
+				},
+				"2_1_22": {
+					"picture": "./assets/paintings/borboletas-16.jpg",
+					"row": 1
+				},
+
+				"2_2_18": {
+					"picture": "./assets/paintings/borboletas_2-05.jpg",
+					"row": 2
+				},
+				"2_2_17": {
+					"picture": "./assets/paintings/borboletas_2-06.jpg",
+					"row": 2
+				},
+				"2_2_16": {
+					"picture": "./assets/paintings/borboletas_2-07.jpg",
+					"row": 2
+				},
+				"2_2_15": {
+					"picture": "./assets/paintings/borboletas_2-08.jpg",
+					"row": 2
+				},
+				"2_1_18": {
+					"picture": "./assets/paintings/borboletas_2-09.jpg",
+					"row": 1
+				},
+				"2_1_17": {
+					"picture": "./assets/paintings/borboletas_2-10.jpg",
+					"row": 1
+				},
+				"2_1_16": {
+					"picture": "./assets/paintings/borboletas_2-11.jpg",
+					"row": 1
+				},
+				"2_1_15": {
+					"picture": "./assets/paintings/borboletas_2-12.jpg",
+					"row": 1
+				},
+
+				"2_2_11": {
+					"picture": "./assets/paintings/borboletas_3-05.jpg",
+					"row": 2
+				},
+				"2_2_10": {
+					"picture": "./assets/paintings/borboletas_3-06.jpg",
+					"row": 2
+				},
+				"2_2_9": {
+					"picture": "./assets/paintings/borboletas_3-07.jpg",
+					"row": 2
+				},
+				"2_2_8": {
+					"picture": "./assets/paintings/borboletas_3-08.jpg",
+					"row": 2
+				},
+				"2_1_11": {
+					"picture": "./assets/paintings/borboletas_3-09.jpg",
+					"row": 1
+				},
+				"2_1_10": {
+					"picture": "./assets/paintings/borboletas_3-10.jpg",
+					"row": 1
+				},
+				"2_1_9": {
+					"picture": "./assets/paintings/borboletas_3-11.jpg",
+					"row": 1
+				},
+				"2_1_8": {
+					"picture": "./assets/paintings/borboletas_3-12.jpg",
+					"row": 1
+				},
+
+				"2_2_4": {
+					"picture": "./assets/paintings/borboletas_4-04.jpg",
+					"row": 2
+				},
+				"2_2_3": {
+					"picture": "./assets/paintings/borboletas_4-03.jpg",
+					"row": 2
+				},
+				"2_1_4": {
+					"picture": "./assets/paintings/borboletas_4-02.jpg",
+					"row": 1
+				},
+				"2_1_3": {
+					"picture": "./assets/paintings/borboletas_4-01.jpg",
+					"row": 1
+				},
+
+
+				"1_2_25": {
+					"picture": "./assets/paintings/naosei-05.jpg",
+					"row": 2
+				},
+				"1_2_24": {
+					"picture": "./assets/paintings/naosei-06.jpg",
+					"row": 2
+				},
+				"1_2_23": {
+					"picture": "./assets/paintings/naosei-07.jpg",
+					"row": 2
+				},
+				"1_2_22": {
+					"picture": "./assets/paintings/naosei-08.jpg",
+					"row": 2
+				},
+				"1_1_25": {
+					"picture": "./assets/paintings/naosei-09.jpg",
+					"row": 1
+				},
+				"1_1_24": {
+					"picture": "./assets/paintings/naosei-10.jpg",
+					"row": 1
+				},
+				"1_1_23": {
+					"picture": "./assets/paintings/naosei-11.jpg",
+					"row": 1
+				},
+				"1_1_22": {
+					"picture": "./assets/paintings/naosei-12.jpg",
+					"row": 1
+				},
+
+				"1_2_18": {
+					"picture": "./assets/paintings/naosei_2-05.jpg",
+					"row": 2
+				},
+				"1_2_17": {
+					"picture": "./assets/paintings/naosei_2-06.jpg",
+					"row": 2
+				},
+				"1_2_16": {
+					"picture": "./assets/paintings/naosei_2-07.jpg",
+					"row": 2
+				},
+				"1_2_15": {
+					"picture": "./assets/paintings/naosei_2-08.jpg",
+					"row": 2
+				},
+				"1_1_18": {
+					"picture": "./assets/paintings/naosei_2-09.jpg",
+					"row": 1
+				},
+				"1_1_17": {
+					"picture": "./assets/paintings/naosei_2-10.jpg",
+					"row": 1
+				},
+				"1_1_16": {
+					"picture": "./assets/paintings/naosei_2-11.jpg",
+					"row": 1
+				},
+				"1_1_15": {
+					"picture": "./assets/paintings/naosei_2-12.jpg",
+					"row": 1
+				},
+
+				"1_2_11": {
+					"picture": "./assets/paintings/naosei_3-05.jpg",
+					"row": 2
+				},
+				"1_2_10": {
+					"picture": "./assets/paintings/naosei_3-06.jpg",
+					"row": 2
+				},
+				"1_2_9": {
+					"picture": "./assets/paintings/naosei_3-07.jpg",
+					"row": 2
+				},
+				"1_2_8": {
+					"picture": "./assets/paintings/naosei_3-08.jpg",
+					"row": 2
+				},
+				"1_1_11": {
+					"picture": "./assets/paintings/naosei_3-09.jpg",
+					"row": 1
+				},
+				"1_1_10": {
+					"picture": "./assets/paintings/naosei_3-10.jpg",
+					"row": 1
+				},
+				"1_1_9": {
+					"picture": "./assets/paintings/naosei_3-11.jpg",
+					"row": 1
+				},
+				"1_1_8": {
+					"picture": "./assets/paintings/naosei_3-12.jpg",
+					"row": 1
+				},
+
+				"1_2_4": {
+					"picture": "./assets/paintings/naosei_4-04.jpg",
+					"row": 2
+				},
+				"1_2_3": {
+					"picture": "./assets/paintings/naosei_4-03.jpg",
+					"row": 2
+				},
+				"1_1_4": {
+					"picture": "./assets/paintings/naosei_4-02.jpg",
+					"row": 1
+				},
+				"1_1_3": {
+					"picture": "./assets/paintings/naosei_4-01.jpg",
+					"row": 1
+				},
+
+				"3_3_7": {
+					"picture": "./assets/paintings/naosei_4-04.jpg",
+					"row": 2
+				},
+				"3_3_8": {
+					"picture": "./assets/paintings/naosei_4-03.jpg",
+					"row": 2
+				},
+				"3_3_9": {
+					"picture": "./assets/paintings/naosei_4-04.jpg",
+					"row": 2
+				},
+				"3_3_10": {
+					"picture": "./assets/paintings/naosei_4-03.jpg",
+					"row": 2
+				},
+				"3_2_7": {
+					"picture": "./assets/paintings/naosei_4-04.jpg",
+					"row": 2
+				},
+				"3_2_8": {
+					"picture": "./assets/paintings/naosei_4-03.jpg",
+					"row": 2
+				},
+				"3_2_9": {
+					"picture": "./assets/paintings/naosei_4-04.jpg",
+					"row": 2
+				},
+				"3_2_10": {
+					"picture": "./assets/paintings/naosei_4-03.jpg",
+					"row": 2
+				},
+				"3_1_7": {
+					"picture": "./assets/paintings/naosei_4-02.jpg",
+					"row": 1
+				},
+				"3_1_8": {
+					"picture": "./assets/paintings/naosei_4-01.jpg",
+					"row": 1
+				},
+				"3_1_9": {
+					"picture": "./assets/paintings/naosei_4-02.jpg",
+					"row": 1
+				},
+				"3_1_10": {
+					"picture": "./assets/paintings/naosei_4-01.jpg",
+					"row": 1
+				},
+				"3_0_7": {
+					"picture": "./assets/paintings/naosei_4-02.jpg",
+					"row": 1
+				},
+				"3_0_8": {
+					"picture": "./assets/paintings/naosei_4-01.jpg",
+					"row": 1
+				},
+				"3_0_9": {
+					"picture": "./assets/paintings/naosei_4-02.jpg",
+					"row": 1
+				},
+				"3_0_10": {
+					"picture": "./assets/paintings/naosei_4-01.jpg",
+					"row": 1
+				},
+
+				"3_3_18": {
+					"picture": "./assets/paintings/naosei_4-04.jpg",
+					"row": 2
+				},
+				"3_3_19": {
+					"picture": "./assets/paintings/naosei_4-03.jpg",
+					"row": 2
+				},
+				"3_3_20": {
+					"picture": "./assets/paintings/naosei_4-04.jpg",
+					"row": 2
+				},
+				"3_3_21": {
+					"picture": "./assets/paintings/naosei_4-03.jpg",
+					"row": 2
+				},
+				"3_2_18": {
+					"picture": "./assets/paintings/naosei_4-04.jpg",
+					"row": 2
+				},
+				"3_2_19": {
+					"picture": "./assets/paintings/naosei_4-03.jpg",
+					"row": 2
+				},
+				"3_2_20": {
+					"picture": "./assets/paintings/naosei_4-04.jpg",
+					"row": 2
+				},
+				"3_2_21": {
+					"picture": "./assets/paintings/naosei_4-03.jpg",
+					"row": 2
+				},
+				"3_1_18": {
+					"picture": "./assets/paintings/naosei_4-02.jpg",
+					"row": 1
+				},
+				"3_1_19": {
+					"picture": "./assets/paintings/naosei_4-01.jpg",
+					"row": 1
+				},
+				"3_1_20": {
+					"picture": "./assets/paintings/naosei_4-02.jpg",
+					"row": 1
+				},
+				"3_1_21": {
+					"picture": "./assets/paintings/naosei_4-01.jpg",
+					"row": 1
+				},
+				"3_0_18": {
+					"picture": "./assets/paintings/naosei_4-02.jpg",
+					"row": 1
+				},
+				"3_0_19": {
+					"picture": "./assets/paintings/naosei_4-01.jpg",
+					"row": 1
+				},
+				"3_0_20": {
+					"picture": "./assets/paintings/naosei_4-02.jpg",
+					"row": 1
+				},
+				"3_0_21": {
+					"picture": "./assets/paintings/naosei_4-01.jpg",
+					"row": 1
 				},
 			};
 
@@ -516,7 +835,7 @@
 				
 				// we will build the walls, firts the horizontal ones and then the vertical ones
 				helper = start;
-				let text;
+				let text, material;
 				for (let i = 0; i < 2; i++){
 					// only change x
 
@@ -524,36 +843,27 @@
 						x = start + square_side / 2 + square_side * j ;
 						z = helper;
 
-						// var dynamictexture = new THREEx.DynamicTexture(square_side, square_side);
-						// dynamictexture.context.font = "7px verdana";
-						// dynamictexture.texture.needsUpdate = true;
-						// text = j.toString();
-						// dynamictexture.clear('#d35400').drawText(text, undefined, square_side - 1, 'green');
+						material = wallMaterial;
 
-						// let material = new THREE.MeshBasicMaterial({map: dynamictexture.texture})
+						if (show_index) {
+							var dynamictexture = new THREEx.DynamicTexture(square_side, square_side);
+							dynamictexture.context.font = "7px verdana";
+							dynamictexture.texture.needsUpdate = true;
+							text = j.toString();
+							dynamictexture.clear('#d35400').drawText(text, undefined, square_side - 1, 'green');
+
+							material = new THREE.MeshBasicMaterial({map: dynamictexture.texture});
+						}
 						
 						wallBase = new THREE.BoxBufferGeometry( square_side, square_side, square_thickness, square_side );
 						wallMiddle1 = new THREE.BoxBufferGeometry( square_side, square_side, square_thickness, square_side );
 						wallMiddle2 = new THREE.BoxBufferGeometry( square_side, square_side, square_thickness, square_side );
 						wallTop = new THREE.BoxBufferGeometry( square_side, square_side, square_thickness, square_side );
 												
-						wallCubeMesh1 = new THREE.Mesh( wallBase, wallMaterial );
-						wallCubeMesh2 = new THREE.Mesh( wallMiddle1, wallMaterial );
-						wallCubeMesh3 = new THREE.Mesh( wallMiddle2, wallMaterial );
-
-						if (j == 0) {
-							var dynamictexture = new THREEx.DynamicTexture(square_side * 4, square_side * 4);
-							dynamictexture.context.font = "bolder 30px verdana";
-							dynamictexture.texture.needsUpdate = true;
-							text = (i + 1).toString();
-							dynamictexture.clear('#ffffff').drawText(text, undefined, square_side * 4 - square_side / 2, 'black');
-
-							let number = new THREE.MeshBasicMaterial({map: dynamictexture.texture})
-							wallCubeMesh4 = new THREE.Mesh( wallTop, number );
-						}
-						else {
-							wallCubeMesh4 = new THREE.Mesh( wallTop, wallMaterial );
-						}
+						wallCubeMesh1 = new THREE.Mesh( wallBase, material );
+						wallCubeMesh2 = new THREE.Mesh( wallMiddle1, material );
+						wallCubeMesh3 = new THREE.Mesh( wallMiddle2, material );
+						wallCubeMesh4 = new THREE.Mesh( wallTop, material );
 
 						index = i + "_" + 0 + "_" + j;
 						if (index in paintings) {
@@ -595,8 +905,6 @@
 						scene.add(wallCubeMesh2);
 						scene.add(wallCubeMesh3);
 						scene.add(wallCubeMesh4);
-						
-						objects.push(wallCubeMesh1);
 					}
 
 					helper += museum_side;
@@ -610,13 +918,17 @@
 						z = start + square_side / 2 + square_side * j;
 						x = helper;
 
-						// var dynamictexture = new THREEx.DynamicTexture(square_side, square_side);
-						// dynamictexture.context.font = "bolder 7px verdana";
-						// dynamictexture.texture.needsUpdate = true;
-						// text = j.toString();
-						// dynamictexture.clear('#cccccc').drawText(text, undefined, square_side - 1, 'orange');
+						material = wallMaterial;
 
-						// let material = new THREE.MeshBasicMaterial({map: dynamictexture.texture})
+						if (show_index) {
+							var dynamictexture = new THREEx.DynamicTexture(square_side, square_side);
+							dynamictexture.context.font = "7px verdana";
+							dynamictexture.texture.needsUpdate = true;
+							text = j.toString();
+							dynamictexture.clear('#cccccc').drawText(text, undefined, square_side - 1, 'orange');
+
+							material = new THREE.MeshBasicMaterial({map: dynamictexture.texture});
+						}
 
 						wallBase = new THREE.BoxBufferGeometry( square_thickness, square_side, square_side, square_side );
 						wallMiddle1 = new THREE.BoxBufferGeometry( square_thickness, square_side, square_side, square_side );
@@ -627,6 +939,26 @@
 						wallCubeMesh2 = new THREE.Mesh( wallMiddle1, wallMaterial );
 						wallCubeMesh3 = new THREE.Mesh( wallMiddle2, wallMaterial );
 						wallCubeMesh4 = new THREE.Mesh( wallTop, wallMaterial );
+
+						index = i + "_" + 0 + "_" + j;
+						if (index in paintings) {
+							wallCubeMesh1 = new THREE.Mesh( wallBase, load_painting(paintings[index].picture) );
+						}
+
+						index = i + "_" + 1 + "_" + j;
+						if (index in paintings) {
+							wallCubeMesh2 = new THREE.Mesh( wallMiddle1, load_painting(paintings[index].picture) );
+						}
+						
+						index = i + "_" + 2 + "_" + j;
+						if (index in paintings) {
+							wallCubeMesh3 = new THREE.Mesh( wallMiddle2, load_painting(paintings[index].picture) );
+						}
+
+						index = i + "_" + 3 + "_" + j;
+						if (index in paintings)  {
+							wallCubeMesh4 = new THREE.Mesh( wallTop, load_painting(paintings[index].picture) );
+						}
 						
 						wallCubeMesh1.position.x = x;
 						wallCubeMesh1.position.y = square_side / 2;
@@ -648,8 +980,6 @@
 						scene.add(wallCubeMesh2);
 						scene.add(wallCubeMesh3);
 						scene.add(wallCubeMesh4);
-						
-						objects.push(wallCubeMesh1);
 					}
 
 					helper += museum_side;
