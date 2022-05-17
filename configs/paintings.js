@@ -368,121 +368,118 @@ const paintings = {
         "picture": "./assets/paintings/numbers-02.jpg",
         "row": 1
     },
-    "3_2_3": {
+    "3_2_5": {
         "picture": "./assets/paintings/homemdascores-03.jpg",
         "row": 2
     },
-    "3_2_4": {
+    "3_2_6": {
         "picture": "./assets/paintings/homemdascores-04.jpg",
         "row": 2
     },
-    "3_1_3": {
+    "3_1_5": {
         "picture": "./assets/paintings/homemdascores-05.jpg",
         "row": 1
     },
-    "3_1_4": {
+    "3_1_6": {
         "picture": "./assets/paintings/homemdascores-06.jpg",
         "row": 1
     },
     
-    "3_2_8": {
-        "picture": "./assets/paintings/outro-03.jpg",
-        "row": 2
-    },
-    "3_2_9": {
-        "picture": "./assets/paintings/outro-04.jpg",
-        "row": 2
-    },
-    "3_2_10": {
-        "picture": "./assets/paintings/outro-05.jpg",
-        "row": 2
-    },
-    "3_2_11": {
-        "picture": "./assets/paintings/outro-06.jpg",
-        "row": 2
-    },
-    "3_1_8": {
-        "picture": "./assets/paintings/outro-07.jpg",
-        "row": 1
-    },
-    "3_1_9": {
-        "picture": "./assets/paintings/outro-08.jpg",
-        "row": 1
-    },
-    "3_1_10": {
-        "picture": "./assets/paintings/outro-09.jpg",
-        "row": 1
-    },
-    "3_1_11": {
-        "picture": "./assets/paintings/outro-10.jpg",
-        "row": 1
-    },
-
-    "3_3_15": {
+    "3_3_10": {
         "picture": "./assets/paintings/blind-07.jpg",
         "row": 3
     },
-    "3_3_16": {
+    "3_3_11": {
         "picture": "./assets/paintings/blind-08.jpg",
         "row": 3
     },
-    "3_3_17": {
+    "3_3_12": {
         "picture": "./assets/paintings/blind-09.jpg",
         "row": 3
     },
-    "3_2_15": {
+    "3_2_10": {
         "picture": "./assets/paintings/blind-10.jpg",
         "row": 2
     },
-    "3_2_16": {
+    "3_2_11": {
         "picture": "./assets/paintings/blind-11.jpg",
         "row": 2
     },
-    "3_2_17": {
+    "3_2_12": {
         "picture": "./assets/paintings/blind-12.jpg",
         "row": 2
     },
-    "3_1_15": {
+    "3_1_10": {
         "picture": "./assets/paintings/blind-13.jpg",
         "row": 1
     },
-    "3_1_16": {
+    "3_1_11": {
         "picture": "./assets/paintings/blind-14.jpg",
         "row": 1
     },
-    "3_1_17": {
+    "3_1_12": {
         "picture": "./assets/paintings/blind-15.jpg",
         "row": 1
     },
-    "3_0_15": {
+    "3_0_10": {
         "picture": "./assets/paintings/blind-16.jpg",
         "row": 0
     },
-    "3_0_16": {
+    "3_0_11": {
         "picture": "./assets/paintings/blind-17.jpg",
         "row": 0
     },
-    "3_0_17": {
+    "3_0_12": {
         "picture": "./assets/paintings/blind-18.jpg",
         "row": 0
     },
 
-    "3_2_21": {
-        "picture": "./assets/paintings/blind0-15.jpg",
+    "3_2_16": {
+        "picture": "./assets/paintings/outro-03.jpg",
+        "row": 2
+    },
+    "3_2_17": {
+        "picture": "./assets/paintings/outro-04.jpg",
+        "row": 2
+    },
+    "3_2_18": {
+        "picture": "./assets/paintings/outro-05.jpg",
+        "row": 2
+    },
+    "3_2_19": {
+        "picture": "./assets/paintings/outro-06.jpg",
+        "row": 2
+    },
+    "3_1_16": {
+        "picture": "./assets/paintings/outro-07.jpg",
         "row": 1
     },
-    "3_2_22": {
-        "picture": "./assets/paintings/blind0-16.jpg",
-        "row": 0
+    "3_1_17": {
+        "picture": "./assets/paintings/outro-08.jpg",
+        "row": 1
     },
-    "3_2_23": {
-        "picture": "./assets/paintings/blind0-17.jpg",
-        "row": 0
+    "3_1_18": {
+        "picture": "./assets/paintings/outro-09.jpg",
+        "row": 1
     },
-    "3_2_24": {
-        "picture": "./assets/paintings/blind0-18.jpg",
-        "row": 0
-    }
+    "3_1_19": {
+        "picture": "./assets/paintings/outro-10.jpg",
+        "row": 1
+    },
+
+
+    "3_1_24": {
+        "picture": "./assets/artist/foto-01.jpg",
+        "row": 1
+    },
+    "3_1_25": {
+        "picture": "./assets/artist/assinatura-02.jpg",
+        "row": 1
+    },
+    "3_1_26": {
+        "picture": "./assets/artist/assinatura-03.jpg",
+        "row": 1
+    },
 };
 
 export { paintings };
