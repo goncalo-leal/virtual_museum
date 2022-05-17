@@ -69,7 +69,6 @@
 
 			let camera, scene, renderer, controls;
 
-			let raycaster_x1, raycaster_x2, raycaster_z1, raycaster_z2;
 			let museum_side = 200;
 			let world_side = 200;
 			let square_side = 7;
@@ -245,6 +244,7 @@
 				// we will build the walls, firts the horizontal ones and then the vertical ones
 				helper = start;
 				let text, material;
+
 				for (let i = 0; i < 2; i++){
 					// only change x
 
@@ -263,10 +263,9 @@
 												
 						let cubeMeshes = get_walls(i, j, x, z, material, show_index, walls);
 
-						scene.add(cubeMeshes[0]);
-						scene.add(cubeMeshes[1]);
-						scene.add(cubeMeshes[2]);
-						scene.add(cubeMeshes[3]);
+						cubeMeshes.forEach((mesh) => {
+							scene.add(mesh);
+						});
 					}
 
 					helper += museum_side;
@@ -291,10 +290,9 @@
 
 						let cubeMeshes = get_walls(i, j, x, z, material, show_index, walls);
 
-						scene.add(cubeMeshes[0]);
-						scene.add(cubeMeshes[1]);
-						scene.add(cubeMeshes[2]);
-						scene.add(cubeMeshes[3]);
+						cubeMeshes.forEach((mesh) => {
+							scene.add(mesh);
+						});
 					}
 
 					helper += museum_side;
@@ -321,12 +319,11 @@
 			function get_walls(wall, column, x, z, material, show_index, walls) {
 
 				if (show_index) {
-					var dynamictexture = new THREEx.DynamicTexture(square_side, square_side);
-					dynamictexture.context.font = "7px verdana";
+					var dynamictexture = new THREEx.DynamicTexture(square_side * 4, square_side * 4);
+					dynamictexture.context.font = "bolder 20px verdana";
 					dynamictexture.texture.needsUpdate = true;
-					text = j.toString();
-					dynamictexture.clear('#cccccc').drawText(text, undefined, square_side - 1, 'orange');
-
+					let text = (column).toString();
+					dynamictexture.clear('#ffffff').drawText(text, undefined, square_side * 4 - square_side / 2, 'black');
 					material = new THREE.MeshBasicMaterial({map: dynamictexture.texture});
 				}
 
