@@ -100,7 +100,7 @@ a, button, input, select {
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	background-color: rgba(0,0,0,0.5);
+	background-color: rgba(231, 235, 197,0.8);
 }
 
 #instructions {
@@ -116,7 +116,15 @@ a, button, input, select {
 	font-size: 14px;
 	cursor: pointer;
 
-	color: white;
+	color: #3a3335;
+}
+
+.logo {
+	width: 50%;
+}
+
+.key {
+	color: #f17d00;
 }
 
 .modal {
