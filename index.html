@@ -23,7 +23,7 @@
 					<br/>
 					Look: <span class="key">MOUSE</span>
 					<br/>
-					More Info: <span class="key">WALL NUMBER</span>
+					More Info: <span class="key">E <small>(looking at a painting)</small></span>
 				</p>
 			</div>
 		</div>
@@ -31,11 +31,11 @@
 		<div id="myModal" class="modal" tabindex="-1">
 			<div class="modal-dialog">
 			  <div class="modal-content">
-				<div class="modal-header">
+				<div class="modal-header" style="background-color: #3a3335; color: #f17d00;">
 				  <h5 class="modal-title" id="modal_title"></h5>
-				  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="color: #f17d00;"></button>
 				</div>
-				<div class="modal-body" style="text-align: center;">
+				<div class="modal-body" style="text-align: center; color: #3a3335; background-color: rgba(231, 235, 197,0.8)">
 					<img src="" alt="" id="modal_image">
 					<p>
 						<br>
@@ -86,7 +86,8 @@
 			const vertex = new THREE.Vector3();
 			const color = new THREE.Color();
 
-			let active_wall, active_index = null;
+			let big_paintings = {};
+			let active_painting, active_index;
 
 			const onKeyDown = function ( event ) {
 
@@ -112,36 +113,27 @@
 						break;
 
 					case 'KeyE':
-						let direction = controls.getDirection(new THREE.Vector3());
-						const mouse = {
-							x: (direction.x / renderer.domElement.clientWidth) * 2 - 1,
-							y: -(direction.y / renderer.domElement.clientHeight) * 2 + 1,
-						}
 
 						raycaster.setFromCamera( new THREE.Vector2(), camera );
 
 						const intersects = raycaster.intersectObjects(sceneMeshes, false);
 
 						if (intersects.length > 0) {
+							
+							let big_painting = big_paintings[intersects[0].object.uuid];
 
-							const n = new THREE.Vector3();
-							n.copy(intersects[0].face.normal)
-							n.transformDirection(intersects[0].object.matrixWorld)
+							if (big_painting != null) {
 
-							const coneGeometry = new THREE.ConeGeometry(0.05, 0.2, 8);
-							const material = new THREE.MeshNormalMaterial();
+								active_painting = big_painting;
+								active_index = 0;
 
-							const cone = new THREE.Mesh(coneGeometry, material);
+								load_info(big_painting);
+								$("#myModal").modal("toggle");
+								controls.unlock();
 
-							cone.lookAt(n)
-							cone.rotateX(Math.PI / 2)
-							cone.position.copy(intersects[0].point)
-							cone.position.addScaledVector(n, 0.1)
-
-							scene.add(cone)
-							sceneMeshes.push(cone)
-
+							}
 						}
+
 						break;
 
 					case 'Space':
@@ -243,6 +235,7 @@
 					
 					if (painting == true) {
 						sceneMeshes.push(wallCubeMesh);
+						big_paintings[wallCubeMesh.uuid] = paintings[index].big_picture;
 					}
 
 					ret.push(wallCubeMesh);
@@ -254,18 +247,16 @@
 			function init() {
 
 				camera = new THREE.PerspectiveCamera(
-					45,
+					55,
 					window.innerWidth / window.innerHeight,
 					0.1,
 					1000
 				);
-				camera.position.set = (-0.1, 1, 6);
+				camera.position.set(-0.1, 1, 6);
 
 				scene = new THREE.Scene();
 				scene.background = new THREE.Color( 0xffffff );
 				scene.fog = new THREE.Fog( 0xffffff, 0, 750 );
-
-				scene.add(new THREE.AxesHelper(5))
 
 				const light = new THREE.HemisphereLight( 0xeeeeff, 0x777788, 0.75 );
 				light.position.set( 0.5, 1, 0.75 );
@@ -352,7 +343,6 @@
 
 						cubeMeshes.forEach((mesh) => {
 							scene.add(mesh);
-							sceneMeshes.push(mesh);
 						});
 					}
 
@@ -368,31 +358,14 @@
 				renderer.setPixelRatio( window.devicePixelRatio );
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				document.body.appendChild( renderer.domElement );
-				
-				/*
-				controls = new OrbitControls(camera, renderer.domElement);
-				controls.enableDamping = true;
-
-				const blocker = document.getElementById( 'blocker' );
-				const instructions = document.getElementById( 'instructions' );
-
-				instructions.style.display = 'none';
-				blocker.style.display = 'none';
-				*/
 
 				controls = new PointerLockControls( camera, document.body );
 
 				const blocker = document.getElementById( 'blocker' );
 				const instructions = document.getElementById( 'instructions' );
 
-				instructions.addEventListener( 'mousedown', function () {
+				instructions.addEventListener( 'click', function () {
 					controls.lock();
-					console.log("yup");
-				});
-
-				instructions.addEventListener( 'mouseup', function () {
-					controls.lock();
-					console.log("yup");
 				});
 
 				controls.addEventListener( 'lock', function () {
@@ -402,7 +375,7 @@
 
 				controls.addEventListener( 'unlock', function () {
 					blocker.style.display = 'block';
-					instructions.style.display = '';
+					instructions.style.display = 'block';
 				});
 
 				scene.add( controls.getObject() );
@@ -410,22 +383,10 @@
 				document.addEventListener( 'keydown', onKeyDown );
 				document.addEventListener( 'keyup', onKeyUp );
 
-				// ------------------
-
-				arrowHelper = new THREE.ArrowHelper(
-					new THREE.Vector3(),
-					new THREE.Vector3(),
-					0.25,
-					0xffff00
-				);
-				scene.add(arrowHelper);
-
 				stats = Stats()
 				document.body.appendChild(stats.dom)
 
 				window.addEventListener( 'resize', onWindowResize, false );
-
-				renderer.domElement.addEventListener('dblclick', onDoubleClick, false)
 
 				animate();
 			}
@@ -437,39 +398,6 @@
 
 				renderer.setSize( window.innerWidth, window.innerHeight );
 
-			}
-
-			function onDoubleClick(event) {
-
-				const mouse = {
-					x: (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
-					y: -(event.clientY / renderer.domElement.clientHeight) * 2 + 1,
-				}
-
-				raycaster.setFromCamera(mouse, camera);
-
-				const intersects = raycaster.intersectObjects(sceneMeshes, false);
-
-				if (intersects.length > 0) {
-
-					const n = new THREE.Vector3();
-					n.copy(intersects[0].face.normal)
-					n.transformDirection(intersects[0].object.matrixWorld)
-
-					const coneGeometry = new THREE.ConeGeometry(0.05, 0.2, 8);
-					const material = new THREE.MeshNormalMaterial();
-
-					const cone = new THREE.Mesh(coneGeometry, material);
-
-					cone.lookAt(n)
-					cone.rotateX(Math.PI / 2)
-					cone.position.copy(intersects[0].point)
-					cone.position.addScaledVector(n, 0.1)
-
-					scene.add(cone)
-					sceneMeshes.push(cone)
-
-				}
 			}
 
 			function animate() {
@@ -555,6 +483,44 @@
 			function render() {
 				renderer.render(scene, camera);
 			}
+
+			function load_info(big_painting) {
+				let painting = wall_paintings[big_painting][0];
+				active_index = 0;
+
+				$("#modal_title").text(painting['title']);
+				$("#modal_image").attr('src', painting['image']);
+				$("#modal_author").text(painting['author']);
+				$("#modal_location").text(painting['location']+ ', ' + painting['year']);
+				$("#modal_desc").text(painting['desc']);
+				$("#modal_size").text(painting['size']);
+			}
+
+			$("#modal_back").click(function() {
+				active_index = active_index - 1 < 0 ? wall_paintings[active_painting].length - 1 : active_index - 1;
+
+				let painting = wall_paintings[active_painting][active_index];
+
+				$("#modal_title").text(painting['title']);
+				$("#modal_image").attr('src', painting['image']);
+				$("#modal_author").text(painting['author']);
+				$("#modal_location").text(painting['location']+ ', ' + painting['year']);
+				$("#modal_desc").text(painting['desc']);
+				$("#modal_size").text(painting['size']);
+			});
+
+			$("#modal_forward").click(function() {
+				active_index = active_index + 1 >= wall_paintings[active_painting].length ? 0 : active_index + 1;
+
+				let painting = wall_paintings[active_painting][active_index];
+
+				$("#modal_title").text(painting['title']);
+				$("#modal_image").attr('src', painting['image']);
+				$("#modal_author").text(painting['author']);
+				$("#modal_location").text(painting['location']+ ', ' + painting['year']);
+				$("#modal_desc").text(painting['desc']);
+				$("#modal_size").text(painting['size']);
+			});
 
 			init();
 
