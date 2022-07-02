@@ -25,7 +25,30 @@ const grayscale_3_painting = "./assets/paintings/mad_cat_grayscale/grayscale_3.p
 const grayscale_4 = "./assets/paintings/mad_cat_grayscale/grayscale_4/grayscale_4_";
 const grayscale_4_painting = "./assets/paintings/mad_cat_grayscale/grayscale_4.png";
 
+// WALL 3
+
+const orange_gray_1 = "./assets/paintings/mad_cat_orange_gray/orange_gray_1/orange_gray_1_";
+const orange_gray_1_painting = "./assets/paintings/mad_cat_orange_gray/orange_gray_1.png";
+
+const orange_gray_2 = "./assets/paintings/mad_cat_orange_gray/orange_gray_2/orange_gray_2_";
+const orange_gray_2_painting = "./assets/paintings/mad_cat_orange_gray/orange_gray_2.png";
+
+const orange_gray_3 = "./assets/paintings/mad_cat_orange_gray/orange_gray_3/orange_gray_3_";
+const orange_gray_3_painting = "./assets/paintings/mad_cat_orange_gray/orange_gray_3.png";
+
+const orange_gray_4 = "./assets/paintings/mad_cat_orange_gray/orange_gray_4/orange_gray_4_";
+const orange_gray_4_painting = "./assets/paintings/mad_cat_orange_gray/orange_gray_4.png";
+
 // WALL 2
+
+const negative_1 = "./assets/paintings/mad_cat_negative/negative_1/negative_1_";
+const negative_1_painting = "./assets/paintings/mad_cat_negative/negative_1.png";
+
+const negative_2 = "./assets/paintings/mad_cat_negative/negative_2/negative_2_";
+const negative_2_painting = "./assets/paintings/mad_cat_negative/negative_2.png";
+
+const negative_3 = "./assets/paintings/mad_cat_negative/negative_3/negative_3_";
+const negative_3_painting = "./assets/paintings/mad_cat_negative/negative_3.png";
 
 // wall_row_column
 const paintings = {
@@ -217,7 +240,89 @@ const paintings = {
         "row": 3
     },
     
+    "1_2_25": {
+        "picture": orange_gray_1 + "1.png",
+        "big_picture": orange_gray_1_painting,
+        "row": 2
+    },
+    "1_2_24": {
+        "picture": orange_gray_1 + "2.png",
+        "big_picture": orange_gray_1_painting,
+        "row": 2
+    },
+    "1_1_25": {
+        "picture": orange_gray_1 + "3.png",
+        "big_picture": orange_gray_1_painting,
+        "row": 1
+    },
+    "1_1_24": {
+        "picture": orange_gray_1 + "4.png",
+        "big_picture": orange_gray_1_painting,
+        "row": 1
+    },
 
+    "1_2_18": {
+        "picture": orange_gray_2 + "1.png",
+        "big_picture": orange_gray_2_painting,
+        "row": 2
+    },
+    "1_2_17": {
+        "picture": orange_gray_2 + "2.png",
+        "big_picture": orange_gray_2_painting,
+        "row": 2
+    },
+    "1_1_18": {
+        "picture": orange_gray_2 + "3.png",
+        "big_picture": orange_gray_2_painting,
+        "row": 1
+    },
+    "1_1_17": {
+        "picture": orange_gray_2 + "4.png",
+        "big_picture": orange_gray_2_painting,
+        "row": 1
+    },
+
+    "1_2_11": {
+        "picture": orange_gray_3 + "1.png",
+        "big_picture": orange_gray_3_painting,
+        "row": 2
+    },
+    "1_2_10": {
+        "picture": orange_gray_3 + "2.png",
+        "big_picture": orange_gray_3_painting,
+        "row": 2
+    },
+    "1_1_11": {
+        "picture": orange_gray_3 + "3.png",
+        "big_picture": orange_gray_3_painting,
+        "row": 1
+    },
+    "1_1_10": {
+        "picture": orange_gray_3 + "4.png",
+        "big_picture": orange_gray_3_painting,
+        "row": 1
+    },
+
+    "1_2_4": {
+        "picture": orange_gray_4 + "1.png",
+        "big_picture": orange_gray_4_painting,
+        "row": 2
+    },
+    "1_2_3": {
+        "picture": orange_gray_4 + "2.png",
+        "big_picture": orange_gray_4_painting,
+        "row": 2
+    },
+    "1_1_4": {
+        "picture": orange_gray_4 + "3.png",
+        "big_picture": orange_gray_4_painting,
+        "row": 1
+    },
+    "1_1_3": {
+        "picture": orange_gray_4 + "4.png",
+        "big_picture": orange_gray_4_painting,
+        "row": 1
+    },
     
     "3_3_0": {
         "picture": "./assets/numbers/numbers-02.jpg",
@@ -225,6 +330,68 @@ const paintings = {
         "row": 1
     },
 
+    "3_2_3": {
+        "picture": negative_1 + "1.png",
+        "big_picture": negative_1_painting,
+        "row": 2
+    },
+    "3_2_4": {
+        "picture": negative_1 + "2.png",
+        "big_picture": negative_1_painting,
+        "row": 2
+    },
+    "3_1_3": {
+        "picture": negative_1 + "3.png",
+        "big_picture": negative_1_painting,
+        "row": 1
+    },
+    "3_1_4": {
+        "picture": negative_1 + "4.png",
+        "big_picture": negative_1_painting,
+        "row": 1
+    },
+
+    "3_2_10": {
+        "picture": negative_2 + "1.png",
+        "big_picture": negative_2_painting,
+        "row": 2
+    },
+    "3_2_11": {
+        "picture": negative_2 + "2.png",
+        "big_picture": negative_2_painting,
+        "row": 2
+    },
+    "3_1_10": {
+        "picture": negative_2 + "3.png",
+        "big_picture": negative_2_painting,
+        "row": 1
+    },
+    "3_1_11": {
+        "picture": negative_2 + "4.png",
+        "big_picture": negative_2_painting,
+        "row": 1
+    },
+
+    "3_2_17": {
+        "picture": negative_3 + "1.png",
+        "big_picture": negative_3_painting,
+        "row": 2
+    },
+    "3_2_18": {
+        "picture": negative_3 + "2.png",
+        "big_picture": negative_3_painting,
+        "row": 2
+    },
+    "3_1_17": {
+        "picture": negative_3 + "3.png",
+        "big_picture": negative_3_painting,
+        "row": 1
+    },
+    "3_1_18": {
+        "picture": negative_3 + "4.png",
+        "big_picture": negative_3_painting,
+        "row": 1
+    },
 
     "3_1_24": {
         "picture": "./assets/artist/mad_leal.jpg",

@@ -88,6 +88,7 @@
 
 			let big_paintings = {};
 			let active_painting, active_index;
+			let show_blocker = true;
 
 			const onKeyDown = function ( event ) {
 
@@ -130,6 +131,7 @@
 								load_info(big_painting);
 								$("#myModal").modal("toggle");
 								controls.unlock();
+								show_blocker = false;
 
 							}
 						}
@@ -374,8 +376,10 @@
 				});
 
 				controls.addEventListener( 'unlock', function () {
-					blocker.style.display = 'block';
-					instructions.style.display = 'block';
+					if (show_blocker == true) {
+						blocker.style.display = 'block';
+						instructions.style.display = 'block';
+					}
 				});
 
 				scene.add( controls.getObject() );
@@ -520,6 +524,11 @@
 				$("#modal_location").text(painting['location']+ ', ' + painting['year']);
 				$("#modal_desc").text(painting['desc']);
 				$("#modal_size").text(painting['size']);
+			});
+
+			$('#myModal').on('hidden.bs.modal', function () {
+				controls.lock();
+				show_blocker = true;
 			});
 
 			init();
